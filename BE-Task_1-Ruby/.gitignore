@@ -1,0 +1,8 @@
+/.bundle
+/log
+/logs/*.log
+/tmp
+/vendor/bundle
+/.env
+/.env.*.local
+!.env.example

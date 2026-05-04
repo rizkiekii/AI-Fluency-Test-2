@@ -1,0 +1,11 @@
+.DS_Store
+.tooling/
+BE*.md
+FE*.md
+Mobile*.md
+template_structure*.md
+QA - Task.md
+.vscode/
+BE-Task_1-Php/.phpunit.cache/
+FE-Task_1-Vue/test-results/
+*.zip
