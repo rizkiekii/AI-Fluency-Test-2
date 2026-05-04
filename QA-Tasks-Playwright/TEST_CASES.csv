@@ -1,1 +1,95 @@
-Title,References,Priority,Type,Automation Type,Automated,Test Level,Team,related_to,Preconditions,Steps,Expected Result
+Case ID,Title,Preconditions,Steps,Expected Results,Priority,Tags,Platform,AI Generated
+TC-001,"Verify Library Books page loads with all expected elements","Browser is open, App is running at localhost:3001","Given I navigate to the Library Books page
+Then I should see the header with 'Library Management' link
+And I should see the 'Library Books' page title
+And I should see a search input and Search Books button
+And I should see a table with columns Book ID, Title, Available Stock, Actions
+And I should see the footer text","All page elements are visible: navigation, title, search bar, book table with correct headers, and footer",P0,Functional,WEB,true
+TC-002,"Verify books table displays all books with correct data","Browser is open, App has been reset via exam fixtures","Given I am on the Library Books page
+When I inspect the book table
+Then each row should display Book ID, Title, Available Stock in 'X of Y' format
+And each row should have Show Log, Return, and Checkout action links","All books are displayed with correct data format; action links are present for each book",P0,Functional,WEB,true
+TC-003,"Verify search books by exact title","Browser is open, Books exist in the system","Given I am on the Library Books page
+When I type 'Clean Code for Libraries' in the search input
+And I click Search Books
+Then I should see exactly 1 result matching that title","One row is displayed matching the exact title 'Clean Code for Libraries'",P0,Functional,WEB,true
+TC-004,"Verify search books by book ID","Browser is open, Book with ID 9001 exists","Given I am on the Library Books page
+When I type '9001' in the search input
+And I click Search Books
+Then I should see exactly 1 result with Book ID 9001","One row is displayed with Book ID 9001",P0,Functional,WEB,true
+TC-005,"Verify search books by partial title","Browser is open, Books exist in the system","Given I am on the Library Books page
+When I type 'JavaScript' in the search input
+And I click Search Books
+Then I should see results containing 'JavaScript' in the title","At least one row is displayed with a title containing 'JavaScript'",P1,Functional,WEB,true
+TC-006,"Verify search with no matching results","Browser is open, Books exist in the system","Given I am on the Library Books page
+When I type 'NonExistentBookXYZ' in the search input
+And I click Search Books
+Then I should see no results or an empty state message","No book rows are displayed or an appropriate 'no results' message is shown",P1,Functional,WEB,true
+TC-007,"Verify search field clears and shows all books","Browser is open, Books exist in the system","Given I am on the Library Books page
+When I search for '9001' and see 1 result
+And I clear the search input
+And I click Search Books
+Then all books should be shown again","The full book list is restored after clearing the search input",P1,Functional,WEB,true
+TC-008,"Verify checkout page loads with correct book info","Browser is open, Book 9005 (Checkout Ready) has 1 of 1 stock","Given I am on the Library Books page
+When I click the Checkout link for book 9005
+Then I should see the Checkout Book page with the book's ID, title, and available stock
+And the Submit Checkout button should be disabled","Checkout page displays correct book info; submit button is disabled until member is looked up",P0,Functional,WEB,true
+TC-009,"Verify checkout a book with valid member and available stock","Browser is open, Book 9005 has 1 of 1 stock, Member exam.checkout-ready@example.com exists","Given I am on the Checkout page for book 9005
+When I enter 'exam.checkout-ready@example.com' in the Library Member ID field
+And the borrower name and phone are loaded
+And I click Submit Checkout
+Then the checkout should succeed and stock should decrease to '0 of 1'","Checkout completes successfully; Available Stock for book 9005 changes from '1 of 1' to '0 of 1'",P0,Functional,WEB,true
+TC-010,"Verify checkout a book that is out of stock","Browser is open, Book 9003 (Out Of Stock) has 0 of 0 stock","Given I am on the Library Books page
+When I click the Checkout link for book 9003
+Then the system should prevent the checkout or show an error/disabled state","Submit button remains disabled or an error message indicates the book is out of stock",P0,Negative,WEB,true
+TC-011,"Verify Submit Checkout is disabled without member lookup","Browser is open, Book 9005 has available stock","Given I am on the Checkout page for book 9005
+When I have not entered a Library Member ID
+Then the Submit Checkout button should be disabled","Submit Checkout button is disabled; user cannot submit without looking up a borrower",P0,Functional,WEB,true
+TC-012,"Verify return page loads with correct book info","Browser is open, Book 9001 (Return On Time) exists","Given I am on the Library Books page
+When I click the Return link for book 9001
+Then I should see the Return Book page with book ID, title, and member ID input
+And the Submit Return button should be disabled","Return page displays correct book info; submit button is disabled until member is looked up",P0,Functional,WEB,true
+TC-013,"Verify return a book on time shows no overdue fine","Browser is open, Book 9001 has an active on-time checkout by exam.return-on-time@example.com","Given I am on the Return page for book 9001
+When I enter 'exam.return-on-time@example.com' in the Library Member ID field
+And the borrower is loaded
+Then the Overdue fine should show 'Rp0'
+And I click Submit Return
+Then the return should succeed and stock should increase","Return completes successfully; Overdue fine is Rp0; stock for book 9001 increases to '1 of 1'",P0,Functional,WEB,true
+TC-014,"Verify return a late book shows overdue fine","Browser is open, Book 9002 has an active late checkout by exam.return-late@example.com","Given I am on the Return page for book 9002
+When I enter 'exam.return-late@example.com' in the Library Member ID field
+And the borrower is loaded
+Then the Overdue fine should show an amount greater than Rp0","Overdue fine is displayed with an amount greater than Rp0 indicating a late return penalty",P0,Functional,WEB,true
+TC-015,"Verify Submit Return is disabled without member lookup","Browser is open, Book 9001 exists","Given I am on the Return page for book 9001
+When I have not entered a Library Member ID
+Then the Submit Return button should be disabled","Submit Return button is disabled; user cannot submit without looking up a borrower",P0,Functional,WEB,true
+TC-016,"Verify Show Log for a book with empty history","Browser is open, Book 9004 (Empty History) has no checkout/return events","Given I am on the Library Books page
+When I click the Show Log link for book 9004
+Then I should see the Book Log page with an empty state message","Book Log page displays message: 'No circulation events have been recorded for this book yet.'",P1,Functional,WEB,true
+TC-017,"Verify Show Log for a book after checkout shows log entry","Browser is open, Book 9005 has been checked out","Given I have completed a checkout for book 9005
+When I click the Show Log link for book 9005
+Then I should see at least one log entry for the checkout event","Book Log page displays at least one circulation event row for the checkout",P1,Functional,WEB,true
+TC-018,"Verify available stock displays correct X of Y format","Browser is open, Books exist in the system","Given I am on the Library Books page
+When I inspect the Available Stock column for each book
+Then each cell should display stock in 'X of Y' format where X is less than or equal to Y","All stock cells match the pattern 'X of Y' with X <= Y",P1,Functional,WEB,true
+TC-019,"Verify large stock numbers display correctly","Browser is open, Book 'PostgreSQL for Archivists' has stock 99999 of 99999","Given I am on the Library Books page
+When I find the row for 'PostgreSQL for Archivists'
+Then the stock should display '99999 of 99999' without layout overflow","Stock cell displays '99999 of 99999' correctly without UI overflow",P2,Boundary,WEB,true
+TC-020,"Verify Back to Book List navigation from all sub-pages","Browser is open, Books exist in the system","Given I navigate to the Checkout, Return, or Book Log page
+When I click 'Back to Book List'
+Then I should be redirected back to the Library Books page","User is navigated back to the Book List page from each sub-page",P1,Functional,WEB,true
+TC-021,"Verify XSS injection in search input is sanitized","Browser is open, App is running","Given I am on the Library Books page
+When I type '<script>alert(""XSS"")</script>' or '<img src=x onerror=alert(1)>' in the search input
+And I click Search Books
+Then no script should execute and no injected HTML should render","No alert is triggered; no injected elements appear in the DOM; application remains functional",P0,Security,WEB,true
+TC-022,"Verify SQL injection in search input is handled safely","Browser is open, App is running","Given I am on the Library Books page
+When I type ""' OR '1'='1' --"" in the search input
+And I click Search Books
+Then the application should not expose database errors or return all records","No SQL error is displayed; search returns no results or an empty state; no data leakage occurs",P0,Security,WEB,true
+TC-023,"Verify special characters in search do not crash application","Browser is open, App is running","Given I am on the Library Books page
+When I type special characters (%00, ${7*7}, {{7*7}}, emoji) in the search input
+And I click Search Books
+Then the application should handle the input gracefully","Application does not crash; page remains functional with search button and table visible",P1,Security,WEB,true
+TC-024,"Verify excessively long search input is handled safely","Browser is open, App is running","Given I am on the Library Books page
+When I type a very long string (10000 characters) in the search input
+And I click Search Books
+Then the application should handle the input without crashing","Application does not crash; page remains functional with search button and table visible",P1,Security,WEB,true
